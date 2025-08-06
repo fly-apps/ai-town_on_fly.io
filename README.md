@@ -1,33 +1,71 @@
-# AI Town 🏠💻💌
+# AI Town on Fly.io 🏠💻💌🚀
 
-[Live Demo](https://www.convex.dev/ai-town)
+**One-click deployment of AI Town for conversational AI testing on Fly.io**
 
-[Join our community Discord: AI Stack Devs](https://discord.gg/PQUmTBTGmT)
+> 🌟 **Official Fly.io fork** of the groundbreaking [AI Town by a16z-infra](https://github.com/a16z-infra/ai-town)  
+> 🚀 **Production-ready** with optimized deployment scripts and documentation  
+> 🎯 **Purpose-built** for testing conversational AI and multi-agent simulations
 
-<img width="1454" alt="Screen Shot 2023-08-14 at 10 01 00 AM" src="https://github.com/a16z-infra/ai-town/assets/3489963/a4c91f17-23ed-47ec-8c4e-9f9a8505057d">
+<img width="1454" alt="AI Town Screenshot" src="https://github.com/a16z-infra/ai-town/assets/3489963/a4c91f17-23ed-47ec-8c4e-9f9a8505057d">
 
-AI Town is a virtual town where AI characters live, chat and socialize.
+## 🚀 Quick Deploy on Fly.io
 
-This project is a deployable starter kit for easily building and customizing your own version of AI
-town. Inspired by the research paper
-[_Generative Agents: Interactive Simulacra of Human Behavior_](https://arxiv.org/pdf/2304.03442.pdf).
+Deploy your own AI Town in under 5 minutes:
 
-The primary goal of this project, beyond just being a lot of fun to work on, is to provide a
-platform with a strong foundation that is meant to be extended. The back-end natively supports
-shared global state, transactions, and a simulation engine and should be suitable from everything
-from a simple project to play around with to a scalable, multi-player game. A secondary goal is to
-make a JS/TS framework available as most simulators in this space (including the original paper
-above) are written in Python.
+```bash
+git clone https://github.com/fly-apps/ai-town_on_fly.io
+cd ai-town_on_fly.io
+./scripts/deploy-to-fly.sh
+```
 
-## Overview
+**What you get:**
+- 🧠 **Multi-agent AI simulation** with persistent conversations and memory
+- 🌍 **Global deployment** with auto-scaling based on usage  
+- 💰 **Cost-optimized** starting at ~$25/month, auto-stop when idle
+- 🔧 **Multiple LLM providers** - OpenAI, Together.ai, or custom APIs
+- 🔒 **Production-ready** with security best practices
 
-- 💻 [Stack](#stack)
-- 🧠 [Installation](#installation) (cloud, local, Docker, self-host, Fly.io, ...)
-- 💻️ [Windows Pre-requisites](#windows-installation)
-- 🤖 [Configure your LLM of choice](#connect-an-llm) (Ollama, OpenAI, Together.ai, ...)
-- 👤 [Customize - YOUR OWN simulated world](#customize-your-own-simulation)
-- 👩‍💻 [Deploying to production](#deploy-the-app-to-production)
+Perfect for:
+- AI researchers testing conversation dynamics
+- Product teams evaluating LLM models
+- Developers building conversational AI applications
+- Anyone wanting a private AI conversation lab
+
+---
+
+## About This Fork
+
+This is a Fly.io-optimized fork of the groundbreaking [AI Town project by a16z-infra](https://github.com/a16z-infra/ai-town). 
+
+**AI Town** is a virtual town where AI characters live, chat and socialize - a deployable starter kit for easily building and customizing your own version of AI town. Inspired by the research paper [_Generative Agents: Interactive Simulacra of Human Behavior_](https://arxiv.org/pdf/2304.03442.pdf).
+
+**What we've added for Fly.io:**
+- ✅ One-command deployment scripts
+- ✅ Optimized Docker containers and configurations  
+- ✅ Comprehensive deployment documentation
+- ✅ Cost optimization and auto-scaling setup
+- ✅ Multi-LLM provider support for cloud deployment
+- ✅ Production security best practices
+
+The primary goal of this project, beyond just being a lot of fun to work on, is to provide a platform with a strong foundation that is meant to be extended. The back-end natively supports shared global state, transactions, and a simulation engine and should be suitable from everything from a simple project to play around with to a scalable, multi-player game.
+
+## Quick Links
+
+**Deployment:**
+- 🚀 [Quick Deploy on Fly.io](#-quick-deploy-on-flyio) (recommended)
+- 📖 [Detailed Fly.io Guide](docs/FLY_DEPLOYMENT.md)
+- 🔧 [Advanced Configuration](#manual-configuration)
+
+**Development:**
+- 🧠 [Local Development](#installation) 
+- 💻 [Stack Overview](#stack)
+- 🤖 [LLM Configuration](#connect-an-llm) (OpenAI, Together.ai, custom APIs)
+- 👤 [Customize Your World](#customize-your-own-simulation)
+
+**Support:**
 - 🐛 [Troubleshooting](#troubleshooting)
+- 💬 [Join our Discord: AI Stack Devs](https://discord.gg/PQUmTBTGmT)
+- 📊 [Live Demo](https://www.convex.dev/ai-town)
 
 ## Stack
 
@@ -80,8 +118,8 @@ There are a few ways to run the app on top of Convex (the backend).
 Note, if you're on Windows, see [below](#windows-installation).
 
 ```sh
-git clone https://github.com/a16z-infra/ai-town.git
-cd ai-town
+git clone https://github.com/fly-apps/ai-town_on_fly.io_on_fly.io.git
+cd ai-town_on_fly.io_on_fly.io
 npm install
 ```
 
@@ -418,8 +456,8 @@ At this point, you can follow the instructions [above](#installation).
 The fastest way to get AI Town running for conversational AI testing:
 
 ```bash
-git clone https://github.com/fly-apps/ai-town
-cd ai-town
+git clone https://github.com/fly-apps/ai-town_on_fly.io
+cd ai-town_on_fly.io
 ./scripts/deploy-to-fly.sh
 ```
 
@@ -448,8 +486,8 @@ brew install flyctl  # macOS
 flyctl auth login
 
 # 3. Clone and deploy
-git clone https://github.com/fly-apps/ai-town
-cd ai-town
+git clone https://github.com/fly-apps/ai-town_on_fly.io
+cd ai-town_on_fly.io
 ./scripts/deploy-to-fly.sh
 ```
 

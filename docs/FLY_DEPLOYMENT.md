@@ -82,8 +82,8 @@ Choose one LLM provider:
 The fastest way to deploy AI Town for testing:
 
 ```bash
-git clone https://github.com/fly-apps/ai-town
-cd ai-town
+git clone https://github.com/fly-apps/ai-town_on_fly.io
+cd ai-town_on_fly.io
 ./scripts/deploy-to-fly.sh
 ```
 
@@ -104,8 +104,8 @@ For more control over the deployment process:
 ### Step 1: Clone and Setup
 
 ```bash
-git clone https://github.com/fly-apps/ai-town
-cd ai-town
+git clone https://github.com/fly-apps/ai-town_on_fly.io
+cd ai-town_on_fly.io
 npm install
 ```
 
@@ -546,7 +546,7 @@ AI Town on Fly.io is perfect for:
 - **Logs**: `flyctl logs --app "your-app"`
 - **Community**: [AI Stack Devs Discord](https://discord.gg/PQUmTBTGmT)
 - **Fly.io Support**: [fly.io/docs](https://fly.io/docs)
-- **GitHub Issues**: [Report bugs](https://github.com/fly-apps/ai-town/issues)
+- **GitHub Issues**: [Report bugs](https://github.com/fly-apps/ai-town_on_fly.io/issues)
 
 ---
 

@@ -75,7 +75,7 @@ The fastest way to get AI Town running for conversational AI testing:
 
 ```bash
 git clone https://github.com/fly-apps/ai-town
-cd ai-town
+cd ai-town_on_fly.io
 ./scripts/deploy-to-fly.sh
 ```
 

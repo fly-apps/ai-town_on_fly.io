@@ -13,7 +13,7 @@ Fly.io makes it easy to deploy containers to the cloud.
 1. Clone the repository:
 
 ```sh
-git clone https://github.com/ai-town/ai-town.git
+git clone https://github.com/fly-apps/ai-town_on_fly.io.git
 ```
 
 2. Deploy a Convex backend
