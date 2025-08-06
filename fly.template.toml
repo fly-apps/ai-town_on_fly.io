@@ -1,0 +1,102 @@
+# Fly.io configuration template for AI Town
+# This file serves as a template for deploying AI Town to Fly.io
+# Copy and customize this file for your deployment
+
+# Frontend Configuration
+# ======================
+# This template is for the frontend React application
+# Replace {{APP_NAME}} with your unique app name
+# Replace {{BACKEND_URL}} with your backend URL
+
+app = "{{APP_NAME}}"
+primary_region = "iad" # Choose closest region to your users
+
+[build]
+# Uses the Dockerfile in the root directory
+
+[env]
+# The Convex backend URL - replace with your actual backend URL
+VITE_CONVEX_URL = "{{BACKEND_URL}}"
+
+[http_service]
+internal_port = 5173
+force_https = true
+auto_stop_machines = "stop" # Stop machines when not in use (cost optimization)
+auto_start_machines = true  # Start machines on request
+min_machines_running = 1    # Keep at least 1 machine running for availability
+
+# Health checks to ensure the app is running properly
+[[http_service.checks]]
+interval = "30s"
+timeout = "10s"
+grace_period = "10s"
+method = "GET"
+path = "/"
+protocol = "http"
+
+# Resource allocation - adjust based on your needs
+[[vm]]
+memory = "1gb"      # 1GB RAM should be sufficient for the frontend
+cpu_kind = "shared" # Shared CPU is cost-effective for most use cases
+cpus = 1            # Single CPU core
+
+# Regional deployment options (uncomment to enable)
+# [[regions]]
+# primary = true
+# region = "iad"  # US East (Virginia)
+
+# [[regions]]
+# region = "lax"  # US West (Los Angeles)
+
+# [[regions]]
+# region = "fra"  # Europe (Frankfurt)
+
+# Environment-specific configurations
+# ===================================
+
+# Development/Staging overrides
+# [deploy.strategy]
+# rolling = "immediate"  # Deploy immediately without waiting
+
+# Production overrides (uncomment for production)
+# [deploy.strategy]
+# bluegreen = true       # Zero-downtime deployments
+# max_unavailable = 0    # Keep all instances running during deploy
+
+# Secrets that need to be configured:
+# ===================================
+# Use 'flyctl secrets set' to configure these:
+#
+# Required:
+# - VITE_CONVEX_URL: Your Convex backend URL
+#
+# Optional (for enhanced features):
+# - VITE_CLERK_PUBLISHABLE_KEY: For authentication (if using Clerk)
+
+# Monitoring and observability
+# ============================
+# Fly.io provides built-in metrics and logging
+# Access logs: flyctl logs --app {{APP_NAME}}
+# Metrics: https://fly.io/apps/{{APP_NAME}}/monitoring
+
+# Scaling configuration
+# ====================
+# For high-traffic deployments, you can scale horizontally:
+# flyctl scale count 3 --app {{APP_NAME}}
+#
+# Or vertically:
+# flyctl scale vm performance-2x --app {{APP_NAME}}
+
+# Cost optimization tips:
+# ======================
+# 1. Use auto_stop_machines for development environments
+# 2. Choose the closest region to your users
+# 3. Start with shared CPU and scale up as needed
+# 4. Monitor usage with 'flyctl status --app {{APP_NAME}}'
+
+# Security considerations:
+# =======================
+# 1. Always use force_https = true
+# 2. Keep secrets in environment variables, never in code
+# 3. Regularly rotate API keys
+# 4. Monitor access logs for suspicious activity

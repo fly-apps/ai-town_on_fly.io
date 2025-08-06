@@ -1,48 +1,44 @@
-# Use an Ubuntu base image
-FROM ubuntu:22.04
+# Use Node.js Alpine for smaller image size and better security
+FROM node:18-alpine
 
-# Install dependencies
-RUN apt-get update && \
-    apt-get install -y \
-    curl \
+# Install system dependencies for native modules and health checks
+RUN apk add --no-cache \
     python3 \
-    python3-pip \
-    unzip \
-    socat \
-    build-essential \
-    libssl-dev \
-    iproute2 \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install NVM, Node.js, and npm
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash && \
-    export NVM_DIR="$HOME/.nvm" && \
-    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
-    nvm install 18 && \
-    nvm use 18
-
-# Add NVM to PATH
-ENV NVM_DIR /root/.nvm
-ENV NODE_VERSION 18.0.0
-RUN . $NVM_DIR/nvm.sh && nvm install $NODE_VERSION
-ENV NODE_PATH $NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
-ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+    make \
+    g++ \
+    wget \
+    && rm -rf /var/cache/apk/*
 
 # Set the working directory
 WORKDIR /usr/src/app
 
-# Copy dependency files
+# Copy dependency files first for better layer caching
 COPY package*.json ./
 
-# Install npm dependencies
-RUN npm install
-
-RUN npx update-browserslist-db@latest
+# Install npm dependencies (including devDependencies for build)
+RUN npm ci --silent && \
+    npm cache clean --force
 
 # Copy application files
 COPY . .
 
-# Expose necessary ports
+# Build the application
+RUN npm run build
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S aitown -u 1001
+
+# Change ownership of the app directory
+RUN chown -R aitown:nodejs /usr/src/app
+USER aitown
+
+# Expose the port
 EXPOSE 5173
 
-CMD ["npx", "vite", "--host"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:5173/ || exit 1
+
+# Use production-optimized command
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]

@@ -4,7 +4,7 @@ const OPENAI_EMBEDDING_DIMENSION = 1536;
 const TOGETHER_EMBEDDING_DIMENSION = 768;
 const OLLAMA_EMBEDDING_DIMENSION = 1024;
 
-export const EMBEDDING_DIMENSION: number = OLLAMA_EMBEDDING_DIMENSION;
+export const EMBEDDING_DIMENSION: number = OPENAI_EMBEDDING_DIMENSION;
 
 export function detectMismatchedLLMProvider() {
   switch (EMBEDDING_DIMENSION) {
@@ -88,25 +88,15 @@ export function getLLMConfig(): LLMConfig {
       apiKey,
     };
   }
-  // Assume Ollama
-  if (EMBEDDING_DIMENSION !== OLLAMA_EMBEDDING_DIMENSION) {
-    detectMismatchedLLMProvider();
-    throw new Error(
-      `Unknown EMBEDDING_DIMENSION ${EMBEDDING_DIMENSION} found` +
-        `. See convex/util/llm.ts for details.`,
-    );
-  }
-  // Alternative embedding model:
-  // embeddingModel: 'llama3'
-  // const OLLAMA_EMBEDDING_DIMENSION = 4096,
-  return {
-    provider: 'ollama',
-    url: process.env.OLLAMA_HOST ?? 'http://127.0.0.1:11434',
-    chatModel: process.env.OLLAMA_MODEL ?? 'llama3',
-    embeddingModel: process.env.OLLAMA_EMBEDDING_MODEL ?? 'mxbai-embed-large',
-    stopWords: ['<|eot_id|>'],
-    apiKey: undefined,
-  };
+
+  // No LLM provider configured - throw helpful error
+  throw new Error(
+    'No LLM provider configured! Please set one of the following environment variables:\n' +
+    '• OPENAI_API_KEY for OpenAI (recommended)\n' +
+    '• TOGETHER_API_KEY for Together.ai\n' +
+    '• LLM_API_URL + LLM_MODEL for custom provider\n' +
+    '\nFor Fly.io deployment, use: flyctl secrets set OPENAI_API_KEY="your-key"'
+  );
 }
 
 const AuthHeaders = (): Record<string, string> =>

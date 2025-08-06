@@ -73,7 +73,7 @@ There are a few ways to run the app on top of Convex (the backend).
 3. There's a community fork of this project offering a one-click install on
    [Pinokio](https://pinokio.computer/item?uri=https://github.com/cocktailpeanutlabs/aitown) for
    anyone interested in running but not modifying it 😎.
-4. You can also deploy it to [Fly.io](https://fly.io/). See [./fly](./fly) for instructions.
+4. You can also deploy it to [Fly.io](https://fly.io/) with our optimized one-click deployment. See [Quick Deploy on Fly.io](#-deploy-on-flyio) below.
 
 ### Standard Setup
 
@@ -412,6 +412,100 @@ Steps:
    ```
 
 At this point, you can follow the instructions [above](#installation).
+
+## 🚀 Deploy on Fly.io
+
+The fastest way to get AI Town running for conversational AI testing:
+
+```bash
+git clone https://github.com/fly-apps/ai-town
+cd ai-town
+./scripts/deploy-to-fly.sh
+```
+
+Perfect for testing:
+- Multi-agent conversations and emergent behaviors
+- Different LLM providers and models (OpenAI, Together.ai)
+- Conversation prompts and agent personalities
+- Memory systems and relationship dynamics
+
+### What the deployment includes:
+
+- **Frontend**: React app optimized for Fly.io hosting
+- **Backend**: Self-hosted Convex backend with real-time data sync
+- **Auto-scaling**: Intelligent machine scaling based on usage
+- **Global deployment**: Deploy close to your users worldwide
+- **Cost-optimized**: Auto-stop machines when idle (~$25-90/month)
+
+### Quick Start
+
+```bash
+# 1. Install Fly.io CLI
+brew install flyctl  # macOS
+# or visit: https://fly.io/docs/hands-on/install-flyctl/
+
+# 2. Login to Fly.io
+flyctl auth login
+
+# 3. Clone and deploy
+git clone https://github.com/fly-apps/ai-town
+cd ai-town
+./scripts/deploy-to-fly.sh
+```
+
+The deployment script will:
+- ✅ Check prerequisites and validate app names
+- 🔧 Prompt for your OpenAI API key and app name
+- 🚀 Deploy both frontend and backend automatically
+- 🔐 Configure all secrets and environment variables
+- 🎉 Provide your live URLs (typically completes in 5-10 minutes)
+
+### Manual Configuration
+
+For advanced setup or different LLM providers:
+
+```bash
+# Configure additional LLM providers
+./scripts/setup-fly-secrets.sh
+
+# Supported providers:
+# - OpenAI (GPT-4, GPT-3.5)
+# - Together.ai (open source models)  
+# - Any OpenAI-compatible API
+```
+
+### Monitoring Your Deployment
+
+```bash
+# View application logs
+flyctl logs --app your-app-name
+
+# Check application status
+flyctl status --app your-app-name
+
+# Monitor resource usage
+flyctl metrics --app your-app-name
+
+# Access Convex dashboard
+# Visit: https://your-app-backend.fly.dev
+```
+
+### Cost Estimation
+
+| Component | Monthly Cost |
+|-----------|--------------|
+| Frontend (1GB RAM) | ~$10-20 |
+| Backend (1GB RAM) | ~$10-20 |
+| OpenAI API usage | ~$5-50 |
+| **Total** | **~$25-90** |
+
+*Costs scale with usage. Auto-stop machines reduce costs during idle periods.*
+
+See [docs/FLY_DEPLOYMENT.md](docs/FLY_DEPLOYMENT.md) for detailed instructions, troubleshooting, and advanced configuration options.
+
+---
+
+*This fork is optimized for Fly.io deployment while maintaining full compatibility with the original [a16z-infra/ai-town](https://github.com/a16z-infra/ai-town) project.*
 
 ## Deploy the app to production
 

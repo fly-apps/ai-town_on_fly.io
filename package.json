@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "npm-run-all --parallel dev:backend dev:frontend",
     "build": "tsc && vite build",
+    "preview": "vite preview",
     "lint": "eslint .",
     "predev": "convex dev --run init --until-success",
     "dev:backend": "convex dev --tail-logs",
