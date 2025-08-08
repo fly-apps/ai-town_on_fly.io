@@ -10,7 +10,33 @@
 
 ## 🚀 Quick Deploy on Fly.io
 
-Deploy your own AI Town in under 5 minutes:
+### First-Time Setup (New to Fly.io?)
+
+If you've never used Fly.io before, you'll need to:
+
+1. **Install Fly.io CLI**:
+   ```bash
+   # macOS
+   brew install flyctl
+   
+   # Linux/WSL
+   curl -L https://fly.io/install.sh | sh
+   
+   # Windows: Download from https://github.com/superfly/flyctl/releases
+   ```
+
+2. **Create account and login**:
+   ```bash
+   flyctl auth signup  # Create new account
+   # OR
+   flyctl auth login   # If you already have an account
+   ```
+
+3. **Get your OpenAI API key** from [platform.openai.com](https://platform.openai.com/account/api-keys)
+
+### Deploy Your AI Town
+
+Once you have Fly.io set up, deploy in under 5 minutes:
 
 ```bash
 git clone https://github.com/fly-apps/ai-town_on_fly.io

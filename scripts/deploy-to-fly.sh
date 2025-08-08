@@ -133,7 +133,7 @@ app = "${BACKEND_APP_NAME}"
 primary_region = "iad"
 
 [build]
-image = "ghcr.io/get-convex/convex-backend:latest"
+image = "ghcr.io/get-convex/convex-backend:4499dd4fd7f2148687a7774599c613d052950f46"
 
 [env]
 TMPDIR = "/convex/data/tmp"
@@ -164,8 +164,13 @@ cpu_kind = "shared"
 cpus = 1
 EOF
 
-# Launch backend
-flyctl launch --yes --no-deploy --name "$BACKEND_APP_NAME"
+# Create the app first (without launching to avoid source code detection)
+flyctl apps create "$BACKEND_APP_NAME"
+
+# Create volume for Convex data persistence
+flyctl volumes create convex_data --size 1 --app "$BACKEND_APP_NAME"
+
+# Deploy using the pre-built image
 flyctl deploy --app "$BACKEND_APP_NAME"
 
 cd ../..
@@ -218,8 +223,8 @@ cpu_kind = "shared"
 cpus = 1
 EOF
 
-# Launch frontend
-flyctl launch --yes --no-deploy --name "$FRONTEND_APP_NAME"
+# Create frontend app
+flyctl apps create "$FRONTEND_APP_NAME"
 
 # Set environment variables for frontend
 flyctl secrets set VITE_CONVEX_URL="$BACKEND_URL" --app "$FRONTEND_APP_NAME"
