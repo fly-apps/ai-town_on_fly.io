@@ -2,7 +2,7 @@
 
 **One-click deployment of AI Town for conversational AI testing on Fly.io**
 
-> 🌟 **Official Fly.io fork** of the groundbreaking [AI Town by a16z-infra](https://github.com/a16z-infra/ai-town)  
+> 🌟 **Fly.io fork** of [AI Town by a16z-infra](https://github.com/a16z-infra/ai-town)  
 > 🚀 **Optimised for Fly.io** with deployment scripts and documentation  
 
 <img width="1454" alt="AI Town Screenshot" src="https://github.com/a16z-infra/ai-town/assets/3489963/a4c91f17-23ed-47ec-8c4e-9f9a8505057d">
