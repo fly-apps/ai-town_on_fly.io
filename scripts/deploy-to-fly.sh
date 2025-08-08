@@ -192,13 +192,17 @@ else
     print_status "Using existing backend app..."
 fi
 
-# Scale to 1 machine before deployment to prevent multiple machines
-print_status "Setting machine count to 1 before deployment..."
-flyctl scale count 1 --app "$BACKEND_APP_NAME"
-
 # Deploy using the pre-built image first to establish the app's region
 print_status "Deploying backend with Convex image..."
 flyctl deploy --app "$BACKEND_APP_NAME"
+
+# Scale to 1 machine after deployment if multiple machines were created
+print_status "Checking machine count and scaling if needed..."
+INITIAL_MACHINE_COUNT=$(flyctl machine list --app "$BACKEND_APP_NAME" | grep -c "app" || echo "0")
+if [ "$INITIAL_MACHINE_COUNT" -gt 1 ]; then
+    print_status "Found $INITIAL_MACHINE_COUNT machines, scaling down to 1..."
+    flyctl scale count 1 --app "$BACKEND_APP_NAME"
+fi
 
 # Get the actual region where the app was deployed
 ACTUAL_REGION=$(flyctl status --app "$BACKEND_APP_NAME" | grep "Region" | head -1 | awk '{print $2}')
