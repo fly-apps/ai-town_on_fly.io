@@ -3,8 +3,7 @@
 **One-click deployment of AI Town for conversational AI testing on Fly.io**
 
 > 🌟 **Official Fly.io fork** of the groundbreaking [AI Town by a16z-infra](https://github.com/a16z-infra/ai-town)  
-> 🚀 **Production-ready** with optimized deployment scripts and documentation  
-> 🎯 **Purpose-built** for testing conversational AI and multi-agent simulations
+> 🚀 **Optimised for Fly.io** with deployment scripts and documentation  
 
 <img width="1454" alt="AI Town Screenshot" src="https://github.com/a16z-infra/ai-town/assets/3489963/a4c91f17-23ed-47ec-8c4e-9f9a8505057d">
 
@@ -45,16 +44,12 @@ cd ai-town_on_fly.io
 ```
 
 **What you get:**
-- 🧠 **Multi-agent AI simulation** with persistent conversations and memory
-- 🌍 **Global deployment** with auto-scaling based on usage  
+- 🧠 **Multi-agent AI simulation** with persistent conversations and memory  
 - 💰 **Cost-optimized** starting at ~$25/month, auto-stop when idle
-- 🔧 **Multiple LLM providers** - OpenAI, Together.ai, or custom APIs
-- 🔒 **Production-ready** with security best practices
+- 🔧 **Multiple LLM providers** - Test different models by simply changing the API key you provide. OpenAI, Together.ai and custom APIs supported
 
 Perfect for:
-- AI researchers testing conversation dynamics
-- Product teams evaluating LLM models
-- Developers building conversational AI applications
+- Builders evaluating different models
 - Anyone wanting a private AI conversation lab
 
 ---
@@ -72,8 +67,6 @@ This is a Fly.io-optimized fork of the groundbreaking [AI Town project by a16z-i
 - ✅ Cost optimization and auto-scaling setup
 - ✅ Multi-LLM provider support for cloud deployment
 - ✅ Production security best practices
-
-The primary goal of this project, beyond just being a lot of fun to work on, is to provide a platform with a strong foundation that is meant to be extended. The back-end natively supports shared global state, transactions, and a simulation engine and should be suitable from everything from a simple project to play around with to a scalable, multi-player game.
 
 ## Quick Links
 
