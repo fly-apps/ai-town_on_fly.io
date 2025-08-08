@@ -196,18 +196,30 @@ else
     print_status "Using existing backend app..."
 fi
 
-# Create volume for Convex data persistence in the same region
-print_status "Creating persistent storage volume in region: $PREFERRED_REGION"
+# Deploy using the pre-built image first to establish the app's region
+print_status "Deploying backend with Convex image..."
+flyctl deploy --app "$BACKEND_APP_NAME"
+
+# Get the actual region where the app was deployed
+ACTUAL_REGION=$(flyctl status --app "$BACKEND_APP_NAME" | grep "Region" | head -1 | awk '{print $2}')
+if [ -z "$ACTUAL_REGION" ]; then
+    ACTUAL_REGION="$PREFERRED_REGION"
+fi
+
+print_status "App deployed in region: $ACTUAL_REGION"
+
+# Create volume for Convex data persistence in the same region as the deployed app
+print_status "Creating persistent storage volume in region: $ACTUAL_REGION"
 if flyctl volumes list --app "$BACKEND_APP_NAME" | grep -q "convex_data"; then
     print_status "Volume 'convex_data' already exists, skipping creation..."
 else
-    if ! flyctl volumes create convex_data --size 1 --region "$PREFERRED_REGION" --app "$BACKEND_APP_NAME"; then
+    if ! flyctl volumes create convex_data --size 1 --region "$ACTUAL_REGION" --app "$BACKEND_APP_NAME"; then
         print_error "Failed to create volume. This may cause deployment issues."
     fi
 fi
 
-# Deploy using the pre-built image
-print_status "Deploying backend with Convex image..."
+# Redeploy to attach the volume
+print_status "Redeploying to attach volume..."
 flyctl deploy --app "$BACKEND_APP_NAME"
 
 cd ../..
