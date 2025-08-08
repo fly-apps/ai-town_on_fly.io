@@ -81,6 +81,25 @@ if [ -z "$APP_NAME" ]; then
     exit 1
 fi
 
+# Get preferred region (optional)
+echo ""
+echo "📍 Region Selection"
+echo "Common regions:"
+echo "  iad - US East (Virginia)"
+echo "  lax - US West (Los Angeles)" 
+echo "  fra - Europe (Frankfurt)"
+echo "  nrt - Asia (Tokyo)"
+echo "  syd - Australia (Sydney)"
+echo ""
+echo -n "Enter preferred region (default: iad): "
+read PREFERRED_REGION
+
+if [ -z "$PREFERRED_REGION" ]; then
+    PREFERRED_REGION="iad"
+fi
+
+print_status "Using region: $PREFERRED_REGION"
+
 # Validate app name format
 if [[ ! "$APP_NAME" =~ ^[a-z0-9-]+$ ]]; then
     print_error "App name must contain only lowercase letters, numbers, and hyphens!"
@@ -95,8 +114,10 @@ print_status "Checking app name availability..."
 
 # Check backend app name
 if flyctl apps list | grep -q "$BACKEND_APP_NAME"; then
-    print_error "App name '$BACKEND_APP_NAME' is already taken. Please choose a different name."
-    exit 1
+    print_warning "App name '$BACKEND_APP_NAME' already exists. Will attempt to use existing app."
+    BACKEND_APP_EXISTS=true
+else
+    BACKEND_APP_EXISTS=false
 fi
 
 # Check frontend app name
@@ -130,7 +151,7 @@ cd fly/backend
 cat > fly.toml << EOF
 # fly.toml app configuration file for AI Town Convex backend
 app = "${BACKEND_APP_NAME}"
-primary_region = "iad"
+primary_region = "${PREFERRED_REGION}"
 
 [build]
 image = "ghcr.io/get-convex/convex-backend:4499dd4fd7f2148687a7774599c613d052950f46"
@@ -165,12 +186,28 @@ cpus = 1
 EOF
 
 # Create the app first (without launching to avoid source code detection)
-flyctl apps create "$BACKEND_APP_NAME"
+if [ "$BACKEND_APP_EXISTS" = false ]; then
+    print_status "Creating backend app..."
+    if ! flyctl apps create "$BACKEND_APP_NAME"; then
+        print_error "Failed to create backend app."
+        exit 1
+    fi
+else
+    print_status "Using existing backend app..."
+fi
 
-# Create volume for Convex data persistence
-flyctl volumes create convex_data --size 1 --app "$BACKEND_APP_NAME"
+# Create volume for Convex data persistence in the same region
+print_status "Creating persistent storage volume in region: $PREFERRED_REGION"
+if flyctl volumes list --app "$BACKEND_APP_NAME" | grep -q "convex_data"; then
+    print_status "Volume 'convex_data' already exists, skipping creation..."
+else
+    if ! flyctl volumes create convex_data --size 1 --region "$PREFERRED_REGION" --app "$BACKEND_APP_NAME"; then
+        print_error "Failed to create volume. This may cause deployment issues."
+    fi
+fi
 
 # Deploy using the pre-built image
+print_status "Deploying backend with Convex image..."
 flyctl deploy --app "$BACKEND_APP_NAME"
 
 cd ../..
@@ -202,7 +239,7 @@ EOF
 cat > fly.toml << EOF
 # fly.toml app configuration file for AI Town frontend
 app = "${FRONTEND_APP_NAME}"
-primary_region = "iad"
+primary_region = "${PREFERRED_REGION}"
 
 [build]
 
