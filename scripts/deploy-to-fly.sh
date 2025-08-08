@@ -165,7 +165,6 @@ force_https = true
 auto_stop_machines = "stop"
 auto_start_machines = true
 min_machines_running = 1
-max_machines_running = 1
 processes = ["app"]
 
 [[http_service.checks]]
@@ -193,6 +192,10 @@ else
     print_status "Using existing backend app..."
 fi
 
+# Scale to 1 machine before deployment to prevent multiple machines
+print_status "Setting machine count to 1 before deployment..."
+flyctl scale count 1 --app "$BACKEND_APP_NAME"
+
 # Deploy using the pre-built image first to establish the app's region
 print_status "Deploying backend with Convex image..."
 flyctl deploy --app "$BACKEND_APP_NAME"
@@ -205,15 +208,27 @@ fi
 
 print_status "App deployed in region: $ACTUAL_REGION"
 
-# Create volume for Convex data persistence in the same region as the deployed app
-print_status "Creating persistent storage volume in region: $ACTUAL_REGION"
-if flyctl volumes list --app "$BACKEND_APP_NAME" | grep -q "convex_data"; then
-    print_status "Volume 'convex_data' already exists, skipping creation..."
+# Create volumes for Convex data persistence in the same region as the deployed app
+print_status "Creating persistent storage volumes in region: $ACTUAL_REGION"
+
+# Get the number of machines that were created
+MACHINE_COUNT=$(flyctl machine list --app "$BACKEND_APP_NAME" | grep -c "app")
+print_status "Detected $MACHINE_COUNT machines, creating matching volumes..."
+
+# Get current volume count
+VOLUME_COUNT=$(flyctl volumes list --app "$BACKEND_APP_NAME" | grep -c "convex_data" || echo "0")
+
+# Create additional volumes if needed
+VOLUMES_NEEDED=$((MACHINE_COUNT - VOLUME_COUNT))
+if [ $VOLUMES_NEEDED -gt 0 ]; then
+    print_status "Creating $VOLUMES_NEEDED additional volumes..."
+    for i in $(seq 1 $VOLUMES_NEEDED); do
+        if ! flyctl volumes create convex_data --size 1 --region "$ACTUAL_REGION" --app "$BACKEND_APP_NAME" --yes; then
+            print_error "Failed to create volume $i. This may cause deployment issues."
+        fi
+    done
 else
-    # Create volume and accept the single volume warning automatically
-    if ! echo "Yes" | flyctl volumes create convex_data --size 1 --region "$ACTUAL_REGION" --app "$BACKEND_APP_NAME"; then
-        print_error "Failed to create volume. This may cause deployment issues."
-    fi
+    print_status "Sufficient volumes already exist."
 fi
 
 # Update fly.toml to include the volume mount now that volume exists
@@ -238,7 +253,6 @@ force_https = true
 auto_stop_machines = "stop"
 auto_start_machines = true
 min_machines_running = 1
-max_machines_running = 1
 processes = ["app"]
 
 [[http_service.checks]]
@@ -254,10 +268,6 @@ memory = "1gb"
 cpu_kind = "shared"
 cpus = 1
 EOF
-
-# Scale to exactly 1 machine to match our single volume
-print_status "Scaling to 1 machine to match volume configuration..."
-flyctl scale count 1 --app "$BACKEND_APP_NAME"
 
 # Redeploy to attach the volume
 print_status "Redeploying to attach volume..."
