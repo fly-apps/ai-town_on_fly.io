@@ -165,6 +165,7 @@ force_https = true
 auto_stop_machines = "stop"
 auto_start_machines = true
 min_machines_running = 1
+max_machines_running = 1
 processes = ["app"]
 
 [[http_service.checks]]
@@ -209,7 +210,8 @@ print_status "Creating persistent storage volume in region: $ACTUAL_REGION"
 if flyctl volumes list --app "$BACKEND_APP_NAME" | grep -q "convex_data"; then
     print_status "Volume 'convex_data' already exists, skipping creation..."
 else
-    if ! flyctl volumes create convex_data --size 1 --region "$ACTUAL_REGION" --app "$BACKEND_APP_NAME"; then
+    # Create volume and accept the single volume warning automatically
+    if ! echo "Yes" | flyctl volumes create convex_data --size 1 --region "$ACTUAL_REGION" --app "$BACKEND_APP_NAME"; then
         print_error "Failed to create volume. This may cause deployment issues."
     fi
 fi
@@ -236,6 +238,7 @@ force_https = true
 auto_stop_machines = "stop"
 auto_start_machines = true
 min_machines_running = 1
+max_machines_running = 1
 processes = ["app"]
 
 [[http_service.checks]]
@@ -251,6 +254,10 @@ memory = "1gb"
 cpu_kind = "shared"
 cpus = 1
 EOF
+
+# Scale to exactly 1 machine to match our single volume
+print_status "Scaling to 1 machine to match volume configuration..."
+flyctl scale count 1 --app "$BACKEND_APP_NAME"
 
 # Redeploy to attach the volume
 print_status "Redeploying to attach volume..."
