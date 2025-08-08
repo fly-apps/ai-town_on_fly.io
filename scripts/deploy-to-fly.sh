@@ -147,7 +147,7 @@ print_status "Deploying Convex backend to Fly.io..."
 
 cd fly/backend
 
-# Create fly.toml from template with dynamic app name
+# Create fly.toml from template with dynamic app name (without volume mount initially)
 cat > fly.toml << EOF
 # fly.toml app configuration file for AI Town Convex backend
 app = "${BACKEND_APP_NAME}"
@@ -158,10 +158,6 @@ image = "ghcr.io/get-convex/convex-backend:4499dd4fd7f2148687a7774599c613d052950
 
 [env]
 TMPDIR = "/convex/data/tmp"
-
-[[mounts]]
-source = "convex_data"
-destination = "/convex/data"
 
 [http_service]
 internal_port = 3210
@@ -217,6 +213,44 @@ else
         print_error "Failed to create volume. This may cause deployment issues."
     fi
 fi
+
+# Update fly.toml to include the volume mount now that volume exists
+cat > fly.toml << EOF
+# fly.toml app configuration file for AI Town Convex backend
+app = "${BACKEND_APP_NAME}"
+primary_region = "${ACTUAL_REGION}"
+
+[build]
+image = "ghcr.io/get-convex/convex-backend:4499dd4fd7f2148687a7774599c613d052950f46"
+
+[env]
+TMPDIR = "/convex/data/tmp"
+
+[[mounts]]
+source = "convex_data"
+destination = "/convex/data"
+
+[http_service]
+internal_port = 3210
+force_https = true
+auto_stop_machines = "stop"
+auto_start_machines = true
+min_machines_running = 1
+processes = ["app"]
+
+[[http_service.checks]]
+interval = "5s"
+timeout = "30s"
+grace_period = "5s"
+method = "GET"
+path = "/version"
+protocol = "http"
+
+[[vm]]
+memory = "1gb"
+cpu_kind = "shared"
+cpus = 1
+EOF
 
 # Redeploy to attach the volume
 print_status "Redeploying to attach volume..."
